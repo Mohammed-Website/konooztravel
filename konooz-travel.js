@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // create all offers content functionality
 const sectionData = [
     {
-        title: 'عروض حصرية',
+        title: 'أحدث العروض',
         image_6: ['عروض-شركة-كنوز/6.jpg', 'رحلة كروز الخليج'],
         image_7: ['عروض-شركة-كنوز/7.jpg', 'رحلة كروز الخليج'],
         image_8: ['عروض-شركة-كنوز/8.jpg', 'رحلة كروز الخليج'],
