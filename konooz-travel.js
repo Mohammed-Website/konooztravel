@@ -98,6 +98,9 @@ const lanterns = [];
 const starCount = 80;
 const lanternCount = 4; // Set to 4 lanterns
 
+// Constant speed factor for consistent movement
+const movementSpeed = 0.002; // Adjust for desired speed
+
 // Function to create glowing stars
 function createStars() {
     for (let i = 0; i < starCount; i++) {
@@ -118,12 +121,10 @@ function createLanterns() {
             x: (canvas.width / (lanternCount + 1)) * (i + 1), // Even spacing
             y: canvas.height * 0.85, // Positioned at bottom quarter
             swing: Math.random() * 10 + 10, // Swing range
-            angle: Math.random() * Math.PI
+            baseAngle: Math.random() * Math.PI // Individual starting positions
         });
     }
 }
-
-let time = 0; // Time variable for animation
 
 function drawCrescentMoon() {
     const baseX = canvas.width - 150;
@@ -131,10 +132,11 @@ function drawCrescentMoon() {
     const outerRadius = 50;
     const innerRadius = 45;
 
-    // Apply a subtle X offset for both the main moon and the clipping circle
-    const wiggleX = Math.sin(time) * 5; // Single wiggle effect
+    // Get a consistent time-based oscillation
+    const currentTime = performance.now() * movementSpeed;
+    const wiggleX = Math.sin(currentTime) * 5; // Keep movement smooth & consistent
 
-    // Draw the outer moon circle with shadow
+    // Draw the outer moon circle
     ctx.fillStyle = "#FFD700"; // Golden color
     ctx.shadowColor = "#FFD700";
 
@@ -143,7 +145,7 @@ function drawCrescentMoon() {
     ctx.fill();
 
     // Remove shadow before clipping
-    ctx.shadowBlur = 0; 
+    ctx.shadowBlur = 0;
     ctx.globalCompositeOperation = "destination-out";
 
     // Clip with a smaller circle to create the crescent effect
@@ -173,14 +175,16 @@ function drawStars() {
 
 // Function to draw 4 lanterns at the bottom with smooth swinging
 function drawLanterns() {
-    lanterns.forEach((lantern) => {
+    const currentTime = performance.now() * movementSpeed; // Sync with moon
+
+    lanterns.forEach((lantern, index) => {
         ctx.globalAlpha = 1; // No flickering
         ctx.fillStyle = "#FFA500"; // Warm orange glow
         ctx.shadowBlur = 15;
         ctx.shadowColor = "#FFA500";
 
-        // Swinging movement
-        let swingX = lantern.x + Math.sin(lantern.angle) * lantern.swing;
+        // Consistent swinging movement
+        let swingX = lantern.x + Math.sin(currentTime + lantern.baseAngle) * lantern.swing;
 
         ctx.beginPath();
         ctx.rect(swingX - 10, lantern.y, 20, 40);
@@ -188,9 +192,6 @@ function drawLanterns() {
         ctx.beginPath();
         ctx.arc(swingX, lantern.y + 40, 10, 0, Math.PI * 2);
         ctx.fill();
-
-        // Update lantern position
-        lantern.angle += 0.02; // Same speed, smooth swing
     });
 }
 
@@ -202,8 +203,6 @@ function animateCanvas() {
     drawStars();
     drawLanterns();
 
-    time += 0.05; // Adjust speed (lower = slower, higher = faster)
-
     requestAnimationFrame(animateCanvas);
 }
 
@@ -211,6 +210,7 @@ function animateCanvas() {
 createStars();
 createLanterns();
 animateCanvas();
+
 
 
 
